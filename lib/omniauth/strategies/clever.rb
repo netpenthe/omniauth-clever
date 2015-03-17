@@ -14,11 +14,14 @@ module OmniAuth
 
       def authorize_params
         super.tap do |params|
-          params[:scope] = 'read_only'
+          params[:scope] = 'read:students,read:teachers,read:user_id'
           params[:clever_landing] = options.client_options.clever_landing || 'admin'
           if options.client_options.dev
             params[:dev] = options.client_options.dev
           end
+          params[:response_type] = 'code'
+          params[:approval_prompt] = 'auto'
+          params[:state] = SecureRandom.hex(24)
         end
       end
 
