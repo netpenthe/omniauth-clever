@@ -8,7 +8,7 @@ module OmniAuth
 
       option :client_options, {
         :site          => 'https://api.clever.com',
-        :authorize_url => 'https://account.clever.com/oauth/authorize',
+        :authorize_url => 'https://clever.com/oauth/authorize',
         :token_url     => 'https://api.clever.com/oauth/token'
       }
 
