@@ -9,7 +9,7 @@ module OmniAuth
       option :client_options, {
         :site          => 'https://api.clever.com',
         :authorize_url => 'https://account.clever.com/oauth/authorize',
-        :token_url     => 'https://api.clever.com/oauth/token'
+        :token_url     => 'https://clever.com/oauth/tokens'
       }
 
       def authorize_params
@@ -23,9 +23,10 @@ module OmniAuth
       end
 
       def token_params
-        username_password = options.client_secret + ":"
+        username_password = options.client_id + ":" + options.client_secret
+        base64_username_password = Base64.encode64(username_password).gsub("\n","")
         super.tap do |params|
-          params[:headers] = {'Authorization' => "Basic #{Base64.encode64(username_password)}"}
+          params[:headers] = {'Authorization' => "Basic #{base64_username_password}"}
         end
       end
 
