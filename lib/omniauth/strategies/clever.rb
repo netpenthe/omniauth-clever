@@ -38,7 +38,7 @@ module OmniAuth
       uid{ raw_info['data']['id'] }
 
       info do
-        { :user_type => raw_info['type'] }.merge! raw_info['data']
+        { :user_type => raw_info['type'] }.merge(raw_info['data']).merge(raw_user_info['data'])
       end
 
       extra do
@@ -60,7 +60,7 @@ module OmniAuth
         if user_type && user_id
           @raw_user_info = access_token.get("/v1.1/#{user_type}s/#{user_id}").parsed
         else
-          @raw_user_info = nil
+          @raw_user_info = {}
         end
 
         @raw_user_info
