@@ -43,12 +43,27 @@ module OmniAuth
 
       extra do
         {
-          'raw_info' => raw_info
+          'raw_info' => raw_info,
+          'raw_user_info' => raw_user_info
         }
       end
 
       def raw_info
         @raw_info ||= access_token.get('/me').parsed
+      end
+
+      def raw_user_info
+        return @raw_user_info if @raw_user_info
+        
+        user_type = raw_info['type']
+        user_id = raw_info['data']['id']
+        if user_type && user_id
+          @raw_user_info = access_token.get("/v1.1/#{user_type}s/#{user_id}").parsed
+        else
+          @raw_user_info = nil
+        end
+
+        @raw_user_info
       end
     end
   end
