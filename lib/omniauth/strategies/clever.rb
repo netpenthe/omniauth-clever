@@ -12,6 +12,18 @@ module OmniAuth
         :token_url     => 'https://clever.com/oauth/tokens'
       }
 
+      option :full_host
+
+      # Allows full host to be overridden. This is important because Clever is forcing https in production,
+      # so we need to use https redirect url even when our host page is http.
+      def full_host
+        if options.full_host.blank?
+          super
+        else
+          options.full_host
+        end
+      end
+
       def authorize_params
         super.tap do |params|
           params[:scope] = 'read:students,read:teachers,read:user_id'
