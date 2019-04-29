@@ -14,6 +14,7 @@ module OmniAuth
         :authorize_url => 'https://clever.com/oauth/authorize',
         :token_url     => 'https://clever.com/oauth/tokens'
       }
+			option :get_user_info, false
 
       # This option bubbles up to the OmniAuth::Strategies::OAuth2
       # when we call super in the callback_phase below.
@@ -45,18 +46,32 @@ module OmniAuth
       uid{ raw_info['data']['id'] }
 
       info do
-        { :user_type => raw_info['type'] }.merge! raw_info['data']
+		   { :user_type => raw_info['type'] }.merge(raw_info['data']).merge(raw_user_info['data'])
       end
 
       extra do
         {
-          'raw_info' => raw_info
+          'raw_info' => raw_info,
+          'raw_user_info' => raw_user_info
         }
       end
 
       def raw_info
         @raw_info ||= access_token.get('/me').parsed
       end
+
+			def raw_user_info
+        return @raw_user_info if @raw_user_info
+
+        @raw_user_info = {}
+
+        if options.get_user_info
+          user_type = raw_info['type']
+          user_id = raw_info['data']['id']
+          if user_type && user_id
+            @raw_user_info = access_token.get("/v1.1/#{user_type}s/#{user_id}").parsed
+          end
+        end
     end
   end
 end
