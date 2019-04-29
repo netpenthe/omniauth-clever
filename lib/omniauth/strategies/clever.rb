@@ -72,6 +72,7 @@ module OmniAuth
             @raw_user_info = access_token.get("/v1.1/#{user_type}s/#{user_id}").parsed
           end
         end
+			end
     end
   end
 end
